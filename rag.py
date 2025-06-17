@@ -121,7 +121,7 @@ llm_llama3 = ChatGroq(
 
 ##############################################################setting opne ai llm ##################################################################
 
-# llm_openai = ChatOpenAI(model="gpt-4o-mini")
+llm_openai = ChatOpenAI(model="gpt-4o-mini")
 ###########################################################setting RAG document formatting ##############################################################
 
 
@@ -165,9 +165,9 @@ if st.button("Submit") and query!="":
     rag_chain = (
     {"context": retriever | format_docs, "question": RunnablePassthrough()}
     | custom_prompt
-    | llm_llama3
+    | llm_openai
     )
-    st.subheader("Meta Llama3 GPT Response")
+    st.subheader("Response")
     res=rag_chain.invoke(query)
     st.write(res.content)
     # tokens["open_ai"]=res.response_metadata['token_usage']['total_tokens']
