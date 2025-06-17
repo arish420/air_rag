@@ -39,6 +39,7 @@ load_dotenv()
 file_id = "1O-kyiidKyEVKgcKcOU2VpNxMdW_Ve9_2"
 output_file = "key.txt"
 
+# https://docs.google.com/document/d/1uBMaUsK15BvuETPtrohNJeDRMoJVRwAgIdwcmfUy7NA/edit?usp=sharing
 # https://drive.google.com/file/d/1O-kyiidKyEVKgcKcOU2VpNxMdW_Ve9_2/view?usp=sharing
 
 # https://docs.google.com/spreadsheets/d/1Dp6Y9ps4md393F5eRZzaZhu044k4JCmrbYDxWmQ6t2g/edit?gid=0#gid=0
