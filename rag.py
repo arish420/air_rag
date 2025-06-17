@@ -36,8 +36,8 @@ import tiktoken
 # Load environment variables
 load_dotenv()
 ###############################################################setting openai ai api##################################################################
-file_id = "1O-kyiidKyEVKgcKcOU2VpNxMdW_Ve9_2"
-output_file = "key.txt"
+# file_id = "1O-kyiidKyEVKgcKcOU2VpNxMdW_Ve9_2"
+# output_file = "key.txt"
 
 
 # https://drive.google.com/file/d/1O-kyiidKyEVKgcKcOU2VpNxMdW_Ve9_2/view?usp=sharing
@@ -47,22 +47,22 @@ output_file = "key.txt"
 # https://drive.google.com/file/d/1O-kyiidKyEVKgcKcOU2VpNxMdW_Ve9_2/view?usp=sharing
 
 # https://docs.google.com/spreadsheets/d/1Dp6Y9ps4md393F5eRZzaZhu044k4JCmrbYDxWmQ6t2g/edit?gid=0#gid=0
-# sheet_id = '1Dp6Y9ps4md393F5eRZzaZhu044k4JCmrbYDxWmQ6t2g' # replace with your sheet's ID
-# url=f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv"
-# df=pd.read_csv(url)
+sheet_id = '1Dp6Y9ps4md393F5eRZzaZhu044k4JCmrbYDxWmQ6t2g' # replace with your sheet's ID
+url=f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv"
+df=pd.read_csv(url)
 # st.write(df)
 
-def download_db():
-    url = f"https://drive.google.com/uc?id={file_id}"
-    gdown.download(url, output_file, quiet=False)
-    return output_file
-k=""
-with open(download_db(),'r') as f:
-    f=f.read()
-    # st.write(f)
-    k=f
-# st.write(k)
-os.environ["OPENAI_API_KEY"] = k
+# def download_db():
+#     url = f"https://drive.google.com/uc?id={file_id}"
+#     gdown.download(url, output_file, quiet=False)
+#     return output_file
+# k=""
+# with open(download_db(),'r') as f:
+#     f=f.read()
+#     # st.write(f)
+#     k=f
+# # st.write(k)
+os.environ["OPENAI_API_KEY"] =  df.keys()[0]
 #####################################################################################################################################################
 # # Load all PDFs in a directory
 # pdf_folder = "database"
