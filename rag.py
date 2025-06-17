@@ -125,6 +125,31 @@ st.title("AI Assistant")
 # selections=st.sidebar.selectbox("☰ Menu", ["Home","AI Assistant", "Feedback"])
 
 
+
+
+custom_prompt = PromptTemplate(
+    input_variables=["context", "question"],
+    template="""
+    You are an aviation AI assistant answering user queries based on the provided context.
+    
+    Context:
+    {context}
+    
+    Question:
+    {question}
+
+    # Instructions:
+    - Response Should be comprehensive
+    - utlilize given context as much as possible
+    - Adapt reponse according to user query
+    """
+    )
+
+
+
+
+
+
 query=""
 # tokens={}
 query=st.text_input("Write Query Here")
