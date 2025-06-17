@@ -40,7 +40,8 @@ file_id = "1O-kyiidKyEVKgcKcOU2VpNxMdW_Ve9_2"
 output_file = "key.txt"
 
 
-https://drive.google.com/file/d/1O-kyiidKyEVKgcKcOU2VpNxMdW_Ve9_2/view?usp=sharing
+# https://drive.google.com/file/d/1O-kyiidKyEVKgcKcOU2VpNxMdW_Ve9_2/view?usp=sharing
+
 
 # https://docs.google.com/document/d/1uBMaUsK15BvuETPtrohNJeDRMoJVRwAgIdwcmfUy7NA/edit?usp=sharing
 # https://drive.google.com/file/d/1O-kyiidKyEVKgcKcOU2VpNxMdW_Ve9_2/view?usp=sharing
