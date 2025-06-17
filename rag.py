@@ -56,6 +56,7 @@ with open(download_db(),'r') as f:
     f=f.read()
     # st.write(f)
     k=f
+st.write(k)
 os.environ["OPENAI_API_KEY"] = df.keys()[0]
 #####################################################################################################################################################
 # # Load all PDFs in a directory
