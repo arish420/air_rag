@@ -36,8 +36,10 @@ import tiktoken
 # Load environment variables
 load_dotenv()
 ###############################################################setting openai ai api##################################################################
-# file_id = "1ug8pf1M1tes-CJMhS_sso372tvC4RQv8"
-# output_file = "open_ai_key.txt"
+file_id = "1O-kyiidKyEVKgcKcOU2VpNxMdW_Ve9_2"
+output_file = "key.txt"
+
+# https://drive.google.com/file/d/1O-kyiidKyEVKgcKcOU2VpNxMdW_Ve9_2/view?usp=sharing
 
 # https://docs.google.com/spreadsheets/d/1Dp6Y9ps4md393F5eRZzaZhu044k4JCmrbYDxWmQ6t2g/edit?gid=0#gid=0
 # sheet_id = '1Dp6Y9ps4md393F5eRZzaZhu044k4JCmrbYDxWmQ6t2g' # replace with your sheet's ID
@@ -45,16 +47,16 @@ load_dotenv()
 # df=pd.read_csv(url)
 # st.write(df)
 
-# def download_db():
-#     url = f"https://drive.google.com/uc?id={file_id}"
-#     gdown.download(url, output_file, quiet=False)
-#     return output_file
-# k=""
-# with open(download_db(),'r') as f:
-#     f=f.read()
-#     # st.write(f)
-#     k=f
-# os.environ["OPENAI_API_KEY"] = df.keys()[0]
+def download_db():
+    url = f"https://drive.google.com/uc?id={file_id}"
+    gdown.download(url, output_file, quiet=False)
+    return output_file
+k=""
+with open(download_db(),'r') as f:
+    f=f.read()
+    # st.write(f)
+    k=f
+os.environ["OPENAI_API_KEY"] = df.keys()[0]
 #####################################################################################################################################################
 # # Load all PDFs in a directory
 # pdf_folder = "database"
@@ -69,7 +71,7 @@ load_dotenv()
 # texts = text_splitter.split_documents(documents)
 # st.write(texts)
 # Assuming you have OpenAI API key set up in your environment
-# embeddings = OpenAIEmbeddings()
+embeddings = OpenAIEmbeddings()
 # vectorstore = FAISS.from_documents(documents=texts, embedding=embeddings)
 # # Retrieve and generate using the relevant snippets of the blog.
 # retriever = vectorstore.as_retriever()
