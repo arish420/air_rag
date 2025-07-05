@@ -33,6 +33,9 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.callbacks import get_openai_callback
 import tiktoken
 
+
+st.title("AIR Assistant")
+
 # Load environment variables
 load_dotenv()
 ###############################################################setting openai ai api##################################################################
@@ -84,94 +87,144 @@ embeddings = OpenAIEmbeddings()
 
 ########################################################################### Loading the vector db ###########################################################
 # Load FAISS index
-index = faiss.read_index("faiss_index.bin")
+# index = faiss.read_index("faiss_index.bin")
 
-# Load metadata
-with open("faiss_metadata.pkl", "rb") as f:
-    docstore_data = pickle.load(f)
+# # Load metadata
+# with open("faiss_metadata.pkl", "rb") as f:
+#     docstore_data = pickle.load(f)
 
-# ✅ Fix: Wrap the docstore dictionary inside InMemoryDocstore
-docstore = InMemoryDocstore(docstore_data)
+# # ✅ Fix: Wrap the docstore dictionary inside InMemoryDocstore
+# docstore = InMemoryDocstore(docstore_data)
 
-# Load index-to-docstore mapping
-with open("faiss_index_to_docstore.pkl", "rb") as f:
-    index_to_docstore_id = pickle.load(f)
+# # Load index-to-docstore mapping
+# with open("faiss_index_to_docstore.pkl", "rb") as f:
+#     index_to_docstore_id = pickle.load(f)
 
-# ✅ Fix: Ensure FAISS is initialized with proper embeddings
-vector_store = FAISS(
-    index=index,
-    embedding_function=embeddings,  # ✅ Ensure embeddings are passed correctly
-    docstore=docstore,  # ✅ Wrap docstore properly
-    index_to_docstore_id=index_to_docstore_id
-)
-# Set up retriever
-retriever = vector_store.as_retriever()
+# # ✅ Fix: Ensure FAISS is initialized with proper embeddings
+# vector_store = FAISS(
+#     index=index,
+#     embedding_function=embeddings,  # ✅ Ensure embeddings are passed correctly
+#     docstore=docstore,  # ✅ Wrap docstore properly
+#     index_to_docstore_id=index_to_docstore_id
+# )
+# # Set up retriever
+# retriever = vector_store.as_retriever()
 
-##########################################################################setting groq api ###############################################################
+# ##########################################################################setting groq api ###############################################################
 
-GROQ_API_KEY=os.getenv("GROQ_API_KEY")
+# GROQ_API_KEY=os.getenv("GROQ_API_KEY")
 
-from langchain_groq import ChatGroq
+# from langchain_groq import ChatGroq
 
-llm_llama3 = ChatGroq(
-    temperature=0,
-    model="llama-3.3-70b-versatile",
-    api_key=GROQ_API_KEY
-)
+# llm_llama3 = ChatGroq(
+#     temperature=0,
+#     model="llama-3.3-70b-versatile",
+#     api_key=GROQ_API_KEY
+# )
 
-##############################################################setting opne ai llm ##################################################################
+# ##############################################################setting opne ai llm ##################################################################
 
-llm_openai = ChatOpenAI(model="gpt-4o-mini")
-###########################################################setting RAG document formatting ##############################################################
-
-
-prompt = hub.pull("rlm/rag-prompt")
-def format_docs(docs):
-    return "\n\n".join(doc.page_content for doc in docs)
-
-st.title("AI Assistant")
-# selections=st.sidebar.selectbox("☰ Menu", ["Home","AI Assistant", "Feedback"])
+# llm_openai = ChatOpenAI(model="gpt-4o-mini")
+# ###########################################################setting RAG document formatting ##############################################################
 
 
+# prompt = hub.pull("rlm/rag-prompt")
+# def format_docs(docs):
+#     return "\n\n".join(doc.page_content for doc in docs)
+
+# st.title("AI Assistant")
+# # selections=st.sidebar.selectbox("☰ Menu", ["Home","AI Assistant", "Feedback"])
 
 
-custom_prompt = PromptTemplate(
-    input_variables=["context", "question"],
-    template="""
-    You are an aviation AI assistant answering user queries based on the provided context.
+
+
+# custom_prompt = PromptTemplate(
+#     input_variables=["context", "question"],
+#     template="""
+#     You are an aviation AI assistant answering user queries based on the provided context.
     
-    Context:
-    {context}
+#     Context:
+#     {context}
     
-    Question:
-    {question}
+#     Question:
+#     {question}
 
-    # Instructions:
-    - Response Should be comprehensive
-    - utlilize given context as much as possible
-    - Adapt reponse according to user query
-    """
-    )
-
-
+#     # Instructions:
+#     - Response Should be comprehensive
+#     - utlilize given context as much as possible
+#     - Adapt reponse according to user query
+#     """
+#     )
 
 
 
 
-query=""
-# tokens={}
-query=st.text_input("Write Query Here")
-if st.button("Submit") and query!="":
-    rag_chain = (
-    {"context": retriever | format_docs, "question": RunnablePassthrough()}
-    | custom_prompt
-    | llm_openai
-    )
-    st.subheader("Response")
-    res=rag_chain.invoke(query)
-    st.write(res.content)
-    # tokens["open_ai"]=res.response_metadata['token_usage']['total_tokens']
-    # tokens_df=pd.DataFrame(tokens.items())
-    # tokens_df.to_csv("token_usage.csv")
-    # st.write(tokens_df)
 
+
+# query=""
+# # tokens={}
+# query=st.text_input("Write Query Here")
+# if st.button("Submit") and query!="":
+#     rag_chain = (
+#     {"context": retriever | format_docs, "question": RunnablePassthrough()}
+#     | custom_prompt
+#     | llm_openai
+#     )
+#     st.subheader("Response")
+#     res=rag_chain.invoke(query)
+#     st.write(res.content)
+#     # tokens["open_ai"]=res.response_metadata['token_usage']['total_tokens']
+#     # tokens_df=pd.DataFrame(tokens.items())
+#     # tokens_df.to_csv("token_usage.csv")
+#     # st.write(tokens_df)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+query=st.text_input("Query")
+
+root_dir = "./chroma_db"
+# query = "dispatch"
+best_match = None
+highest_score = -1
+top_result = None
+if st.button("Check"):
+    for pdf_id in os.listdir(root_dir):
+        persist_dir = os.path.join(root_dir, pdf_id)
+        if os.path.isdir(persist_dir):
+            try:
+                vectordb = Chroma(
+                    collection_name=pdf_id,
+                    embedding_function=embedding,
+                    persist_directory=persist_dir,
+                    # client_settings=Settings(anonymized_telemetry=False)
+                )
+                results = vectordb.similarity_search_with_score(query, k=1)
+                if results:
+                    doc, score = results[0]
+                    st.write(f"Matched in {pdf_id} with score {score:.4f}")
+                    if score > highest_score:
+                        best_match = pdf_id
+                        highest_score = score
+                        top_result = doc
+            except Exception as e:
+                st.write(f"Error loading {pdf_id}: {e}")
+    
+    if best_match:
+        st.write(f"\n✅ Best match: {best_match}")
+        st.write(f"🔍 Content: {top_result.page_content}")
+    else:
+        st.write("❌ No matches found.")
+    
+    
