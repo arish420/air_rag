@@ -3,6 +3,7 @@ langchain
 langchain-community
 pypdf
 seaborn
+chromadb
 nltk
 wordcloud
 torch
