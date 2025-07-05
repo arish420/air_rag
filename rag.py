@@ -208,7 +208,7 @@ if st.button("Check"):
             try:
                 vectordb = Chroma(
                     collection_name=pdf_id,
-                    embedding_function=embedding,
+                    embedding_function=embeddings,
                     persist_directory=persist_dir,
                     # client_settings=Settings(anonymized_telemetry=False)
                 )
