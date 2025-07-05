@@ -213,7 +213,7 @@ if st.button("Check"):
                     collection_name=pdf_id,
                     embedding_function=embeddings,
                     persist_directory=persist_dir,
-                    # client_settings=Settings(anonymized_telemetry=False)
+                    client_settings=Settings(anonymized_telemetry=False)
                 )
                 results = vectordb.similarity_search_with_score(query, k=1)
                 if results:
