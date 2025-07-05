@@ -1,3 +1,5 @@
+
+from langchain.vectorstores import Chroma
 import streamlit as st
 import pandas as pd
 from langchain_community.document_loaders import PyPDFLoader
