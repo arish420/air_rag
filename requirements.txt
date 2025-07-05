@@ -6,6 +6,7 @@ seaborn
 chromadb
 nltk
 wordcloud
+numpy==1.26.4
 torch
 openpyxl
 python-dotenv
