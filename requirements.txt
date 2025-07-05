@@ -3,6 +3,7 @@ langchain
 langchain-community
 pypdf
 seaborn
+pysqlite3-binary
 chromadb
 nltk
 wordcloud
