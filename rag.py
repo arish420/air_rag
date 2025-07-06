@@ -45,7 +45,7 @@ from langchain.embeddings import OpenAIEmbeddings
 from langchain.callbacks import get_openai_callback
 import tiktoken
 from sklearn.metrics.pairwise import cosine_similarity
-
+import numpy as np
 
 st.title("AIR Assistant")
 
