@@ -46,7 +46,8 @@ from langchain.callbacks import get_openai_callback
 import tiktoken
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
-
+# Create embedding model
+embed_model = OpenAIEmbeddings(model="text-embedding-3-large")
 st.title("AIR Assistant")
 
 # Load environment variables
@@ -101,7 +102,8 @@ os.environ["OPENAI_API_KEY"] =  df.keys()[0]
 ########################################################################### Loading the vector db ###########################################################
 # Load FAISS index
 # index = faiss.read_index("faiss_index.bin")
-
+# Create embedding model
+embed_model = OpenAIEmbeddings(model="text-embedding-3-large")
 # # Load metadata
 # with open("faiss_metadata.pkl", "rb") as f:
 #     docstore_data = pickle.load(f)
