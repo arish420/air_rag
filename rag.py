@@ -1,11 +1,17 @@
 # from chromadb.config import Settings
 
+from langchain.chat_models import ChatOpenAI
+from langchain.schema import HumanMessage
+import os
+
 __import__('pysqlite3')
 import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 from langchain.vectorstores import Chroma
 import streamlit as st
 import pandas as pd
+import sqlite3
+import pickle
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.document_loaders import PyPDFDirectoryLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -38,6 +44,7 @@ from langchain_community.docstore.in_memory import InMemoryDocstore  # ✅ Corre
 from langchain.embeddings import OpenAIEmbeddings
 from langchain.callbacks import get_openai_callback
 import tiktoken
+from sklearn.metrics.pairwise import cosine_similarity
 
 
 st.title("AIR Assistant")
@@ -86,7 +93,7 @@ os.environ["OPENAI_API_KEY"] =  df.keys()[0]
 # texts = text_splitter.split_documents(documents)
 # st.write(texts)
 # Assuming you have OpenAI API key set up in your environment
-embeddings = OpenAIEmbeddings()
+# embeddings = OpenAIEmbeddings()
 # vectorstore = FAISS.from_documents(documents=texts, embedding=embeddings)
 # # Retrieve and generate using the relevant snippets of the blog.
 # retriever = vectorstore.as_retriever()
@@ -198,39 +205,104 @@ embeddings = OpenAIEmbeddings()
 
 
 
-query=st.text_input("Query")
+# query=st.text_input("Query")
 
-root_dir = "./chroma_db"
-# query = "dispatch"
-best_match = None
-highest_score = -1
-top_result = None
-if st.button("Check"):
-    for pdf_id in os.listdir(root_dir):
-        persist_dir = os.path.join(root_dir, pdf_id)
-        if os.path.isdir(persist_dir):
-            try:
-                vectordb = Chroma(
-                    collection_name=pdf_id,
-                    embedding_function=embeddings,
-                    persist_directory=persist_dir,
-                    # client_settings=Settings(anonymized_telemetry=False)
-                )
-                results = vectordb.similarity_search_with_score(query, k=1)
-                if results:
-                    doc, score = results[0]
-                    st.write(f"Matched in {pdf_id} with score {score:.4f}")
-                    if score > highest_score:
-                        best_match = pdf_id
-                        highest_score = score
-                        top_result = doc
-            except Exception as e:
-                st.write(f"Error loading {pdf_id}: {e}")
+# root_dir = "./chroma_db"
+# # query = "dispatch"
+# best_match = None
+# highest_score = -1
+# top_result = None
+# if st.button("Check"):
+#     for pdf_id in os.listdir(root_dir):
+#         persist_dir = os.path.join(root_dir, pdf_id)
+#         if os.path.isdir(persist_dir):
+#             try:
+#                 vectordb = Chroma(
+#                     collection_name=pdf_id,
+#                     embedding_function=embeddings,
+#                     persist_directory=persist_dir,
+#                     # client_settings=Settings(anonymized_telemetry=False)
+#                 )
+#                 results = vectordb.similarity_search_with_score(query, k=1)
+#                 if results:
+#                     doc, score = results[0]
+#                     st.write(f"Matched in {pdf_id} with score {score:.4f}")
+#                     if score > highest_score:
+#                         best_match = pdf_id
+#                         highest_score = score
+#                         top_result = doc
+#             except Exception as e:
+#                 st.write(f"Error loading {pdf_id}: {e}")
     
-    if best_match:
-        st.write(f"\n✅ Best match: {best_match}")
-        st.write(f"🔍 Content: {top_result.page_content}")
-    else:
-        st.write("❌ No matches found.")
+#     if best_match:
+#         st.write(f"\n✅ Best match: {best_match}")
+#         st.write(f"🔍 Content: {top_result.page_content}")
+#     else:
+#         st.write("❌ No matches found.")
+    
+
+def custom_prompt(context, question):
+    return f"""
+    You are an aviation AI assistant answering user queries based on the provided context.
+    
+    Context:
+    {context}
+    
+    Question:
+    {question}
+
+    # Instructions:
+    - Response Should be comprehensive.
+    - utlilize given context as much as possible.
+    - anser each aspect of query.
+    - Adapt reponse according to user query.
+    """
+
+
+conn = sqlite3.connect("embeddings.db")
+cursor = conn.cursor()
+
+cursor.execute("SELECT file_name, text, embedding FROM embeddings")
+rows = cursor.fetchall()
+
+# Reconstruct DataFrame
+data = []
+for file_name, text, emb_blob in rows:
+    embedding = pickle.loads(emb_blob)
+    data.append({"file_name": file_name, "text": text, "embedding": embedding})
+
+df_loaded = pd.DataFrame(data)
+conn.close()
+
+
+
+
+query= st. text_input("Write Concern Here")
+
+
+if st.button("Ask") and query!="":
+    query_embedding = np.array(embed_model.embed_query(query)).reshape(1, -1)
+    
+    # Create embedding matrix
+    embedding_matrix = np.vstack(df_loaded['embedding'].values)
+    
+    # Compute cosine similarity
+    similarities = cosine_similarity(query_embedding, embedding_matrix)[0]
+    df_loaded["similarity"] = similarities
+    
+    # Get top 5 similar files
+    top5 = df_loaded.sort_values(by="similarity", ascending=False)
+    # print(top5[["file_name", "similarity"]])
+
+
+
+
+    # Initialize GPT-4o-mini model
+    llm = ChatOpenAI(model_name="gpt-4o-mini", temperature=0.7)
+    
+    # Use `.invoke()` with a message
+    response = llm.invoke(custom_prompt("\n".join(top5['text'][:5]),query))
+    
+    st.write(response.content)
     
     
