@@ -47,7 +47,6 @@ import tiktoken
 from sklearn.metrics.pairwise import cosine_similarity
 import numpy as np
 # Create embedding model
-embed_model = OpenAIEmbeddings(model="text-embedding-3-large")
 st.title("AIR Assistant")
 
 # Load environment variables
@@ -69,6 +68,7 @@ url=f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv"
 df=pd.read_csv(url)
 # st.write(df)
 
+
 # def download_db():
 #     url = f"https://drive.google.com/uc?id={file_id}"
 #     gdown.download(url, output_file, quiet=False)
@@ -80,6 +80,7 @@ df=pd.read_csv(url)
 #     k=f
 # # st.write(k)
 os.environ["OPENAI_API_KEY"] =  df.keys()[0]
+embed_model = OpenAIEmbeddings(model="text-embedding-3-large")
 #####################################################################################################################################################
 # # Load all PDFs in a directory
 # pdf_folder = "database"
